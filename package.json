@@ -16,8 +16,10 @@
     ]
   },
   "dependencies": {
+    "body-parser": "^1.17.2",
     "debug": "^2.6.8",
     "express": "^4.15.3",
+    "mongoose": "^4.10.2",
     "supertest": "^3.0.0"
   },
   "devDependencies": {
