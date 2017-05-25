@@ -3,7 +3,7 @@
     "start": "node ./bin/www",
     "precommit": "xo && lint-staged",
     "lint": "xo",
-    "test": "ava"
+    "test": "NODE_ENV=test ava"
   },
   "xo": {
     "extends": "prettier"

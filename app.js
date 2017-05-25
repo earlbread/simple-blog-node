@@ -4,19 +4,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
+const Post = require('./models/post');
 
 const app = express();
-const db = mongoose.createConnection('mongodb://localhost:27017/simpleblog');
+const env = process.env.NODE_ENV || 'development';
 
-const postSchema = new mongoose.Schema({
-  subject: String,
-  content: String,
-  created: { type: Date, default: Date.now }
-});
+mongoose.Promise = global.Promise;
 
-const Post = db.model('Post', postSchema);
+if (env === 'development') {
+  mongoose.connect('mongodb://localhost:27017/simpleblog_dev');
+} else if (env === 'test') {
+  mongoose.connect('mongodb://localhost:27017/simpleblog_test');
+}
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -35,9 +36,10 @@ app.post('/posts', (req, res) => {
     subject: req.body.subject,
     content: req.body.content
   });
-  post.save();
-
-  res.redirect('/posts');
+  post.save((err, post) => {
+    if (err) throw err;
+    res.send(post);
+  });
 });
 
 module.exports = app;
